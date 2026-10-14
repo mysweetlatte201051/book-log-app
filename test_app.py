@@ -1,12 +1,17 @@
 import pytest
 from app import app
 from db import DATABASE_URL
+from init_db import init_db
 import psycopg2
 
 @pytest.fixture
 def client():
     # Flaskのテストモードを有効化
     app.config["TESTING"] = True
+
+    # テスト開始前にテーブルが存在することを確認（なければ作成）
+    init_db()
+
     with app.test_client() as client:
         # テスト実行前にテーブルをクリア（初期化）
         conn = psycopg2.connect(DATABASE_URL)
