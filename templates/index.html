@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書籍管理アプリ (Book Log)</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        h1, h2 { color: #333; }
+        form { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        div { margin-bottom: 10px; }
+        label { display: inline-block; width: 100px; }
+        input, select { padding: 5px; width: 250px; }
+        button { padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .actions { display: flex; gap: 5px; }
+        .btn-edit { background-color: #28a745; text-decoration: none; color: white; padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+        .btn-delete { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>📚 書籍管理アプリ</h1>
+
+    <h2>新しい本を追加</h2>
+    <form action="/add" method="POST">
+        <div>
+            <label>タイトル:</label>
+            <input type="text" name="title" required>
+        </div>
+        <div>
+            <label>著者:</label>
+            <input type="text" name="author">
+        </div>
+        <div>
+            <label>ステータス:</label>
+            <select name="status">
+                <option value="積読">積読</option>
+                <option value="読書中">読書中</option>
+                <option value="読了">読了</option>
+            </select>
+        </div>
+        <div>
+            <label>評価 (1-5):</label>
+            <input type="number" name="rating" min="1" max="5">
+        </div>
+        <button type="submit">登録する</button>
+    </form>
+
+    <h2>登録書籍一覧</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>タイトル</th>
+                <th>著者</th>
+                <th>ステータス</th>
+                <th>評価</th>
+                <th>更新日時</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.id }}</td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author or '' }}</td>
+                <td>{{ book.status }}</td>
+                <td>{{ book.rating or '' }}</td>
+                <td>{{ book.updated_at.strftime('%Y-%m-%d %H:%M') if book.updated_at else '' }}</td>
+                <td class="actions">
+                    <a href="/edit/{{ book.id }}" class="btn-edit">編集</a>
+                    <form action="/delete/{{ book.id }}" method="POST" style="display:inline; margin:0; padding:0; background:none;" onsubmit="return confirm('本当に削除しますか？');">
+                        <button type="submit" class="btn-delete">削除</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center;">登録されている書籍はありません。</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書籍情報の編集</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 0 20px; }
+        h1 { color: #333; }
+        form { background: #f9f9f9; padding: 20px; border-radius: 5px; }
+        div { margin-bottom: 12px; }
+        label { display: inline-block; width: 100px; }
+        input, select { padding: 6px; width: 250px; }
+        button { padding: 6px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        a { display: inline-block; margin-left: 10px; color: #6c757d; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>✏️ 書籍情報の編集</h1>
+
+    <form action="/edit/{{ book.id }}" method="POST">
+        <div>
+            <label>タイトル:</label>
+            <input type="text" name="title" value="{{ book.title }}" required>
+        </div>
+        <div>
+            <label>著者:</label>
+            <input type="text" name="author" value="{{ book.author or '' }}">
+        </div>
+        <div>
+            <label>ステータス:</label>
+            <select name="status">
+                <option value="積読" {% if book.status == '積読' %}selected{% endif %}>積読</option>
+                <option value="読書中" {% if book.status == '読書中' %}selected{% endif %}>読書中</option>
+                <option value="読了" {% if book.status == '読書中' or book.status == '読了' %}selected{% endif %}>読了</option>
+            </select>
+        </div>
+        <div>
+            <label>評価 (1-5):</label>
+            <input type="number" name="rating" min="1" max="5" value="{{ book.rating or '' }}">
+        </div>
+        <button type="submit">更新する</button>
+        <a href="/">キャンセル</a>
+    </form>
+</body>
+</html>

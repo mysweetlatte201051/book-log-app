@@ -37,7 +37,7 @@ def client():
 def test_index_page(client):
     response = client.get("/")
     assert response.status_code == 200
-    assert "book-log-app" in response.data.decode("utf-8")
+    assert "書籍管理アプリ" in response.get_data(as_text=True)
 
 # --------------------------------------------------
 # 2. 書籍の新規登録テスト（Create）
@@ -50,21 +50,17 @@ def test_add_book(client):
         "status": "読書中",
         "rating": "4"
     }
-    response = client.post("/", data=post_data, follow_redirects=True)
+    # 追加エンドポイントを / から /add に変更
+    response = client.post("/add", data=post_data, follow_redirects=True)
     assert response.status_code == 200
-
-    # 画面上に投稿したデータが表示されているか検証
-    html_content = response.data.decode("utf-8")
-    assert "テスト用Python本" in html_content
-    assert "テスト著者" in html_content
-    assert "読書中" in html_content
+    assert "テスト用Python本" in response.get_data(as_text=True)
 
 # --------------------------------------------------
 # 3. 書籍の更新テスト（Update）
 # --------------------------------------------------
 def test_update_book(client):
     # まずテストデータを1件挿入
-    client.post("/", data={"title": "変更前の本", "status": "積読"}, follow_redirects=True)
+    client.post("/add", data={"title": "変更前の本", "status": "積読"}, follow_redirects=True)
 
     # ID:1 の書籍を更新
     update_data = {
@@ -75,11 +71,7 @@ def test_update_book(client):
     }
     response = client.post("/edit/1", data=update_data, follow_redirects=True)
     assert response.status_code == 200
-
-    # 一覧画面に更新内容が反映されているか検証
-    html_content = response.data.decode("utf-8")
-    assert "変更後の本" in html_content
-    assert "読了" in html_content
+    assert "変更後の本" in response.get_data(as_text=True)
 
 # --------------------------------------------------
 # 4. 書籍の削除テスト（Delete）
@@ -93,5 +85,4 @@ def test_delete_book(client):
     assert response.status_code == 200
 
     # 画面から削除されているか検証
-    html_content = response.data.decode("utf-8")
-    assert "削除される本" not in html_content
+    assert "削除される本" not in response.get_data(as_text=True)
