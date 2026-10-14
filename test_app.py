@@ -86,3 +86,25 @@ def test_delete_book(client):
 
     # 画面から削除されているか検証
     assert "削除される本" not in response.get_data(as_text=True)
+
+
+# --------------------------------------------------
+# 5. 検索テスト
+# --------------------------------------------------
+def test_search_books(client):
+    # テスト用データを3件作成 (/add エンドポイントへ POST)
+    client.post("/add", data={"title": "Python入門", "author": "山田太郎", "status": "読書中"}, follow_redirects=True)
+    client.post("/add", data={"title": "Flask Web開発", "author": "佐藤花子", "status": "積読"}, follow_redirects=True)
+    client.post("/add", data={"title": "SQL実践ガイド", "author": "山田太郎", "status": "読了"}, follow_redirects=True)
+
+    # 1. キーワード「Python」で検索 ➔ 「Python入門」のみ表示されること
+    response = client.get("/?keyword=Python")
+    content = response.get_data(as_text=True)
+    assert "Python入門" in content
+    assert "Flask Web開発" not in content
+
+    # 2. ステータス「積読」で絞り込み ➔ 「Flask Web開発」のみ表示されること
+    response = client.get("/?status=積読")
+    content = response.get_data(as_text=True)
+    assert "Flask Web開発" in content
+    assert "Python入門" not in content

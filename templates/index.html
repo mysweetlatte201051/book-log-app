@@ -9,6 +9,27 @@
 <body>
     <h1>📚 書籍管理アプリ</h1>
 
+    <h2>🔍 書籍を検索・絞り込み</h2>
+    <form action="/" method="GET" style="display: flex; gap: 10px; align-items: center; background: #eef7ff;">
+        <div>
+            <label for="search-keyword" style="width: auto;">キーワード:</label>
+            <input type="text" id="search-keyword" name="keyword" value="{{ keyword or '' }}" placeholder="タイトルや著者名">
+        </div>
+        <div>
+            <label for="search-status" style="width: auto;">ステータス:</label>
+            <select id="search-status" name="status" style="width: 120px;">
+                <option value="">すべて</option>
+                <option value="積読" {% if status == '積読' %}selected{% endif %}>積読</option>
+                <option value="読書中" {% if status == '読書中' %}selected{% endif %}>読書中</option>
+                <option value="読了" {% if status == '読了' %}selected{% endif %}>読了</option>
+            </select>
+        </div>
+        <button type="submit" style="background-color: #17a2b8;">検索</button>
+        {% if keyword or status %}
+            <a href="/" style="font-size: 13px; color: #6c757d; text-decoration: none;">クリア</a>
+        {% endif %}
+    </form>
+
     <h2>新しい本を追加</h2>
     <form action="{{ url_for('add_book') }}" method="POST">
         <div>

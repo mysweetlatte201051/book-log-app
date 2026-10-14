@@ -16,13 +16,34 @@ def get_db_connection():
 
 @app.route("/")
 def index():
+    keyword = request.args.get("keyword", "").strip()
+    status = request.args.get("status", "").strip()
+
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM books ORDER BY id DESC;")
+
+    # 基本となる SQL クエリ
+    sql = "SELECT * FROM books WHERE 1=1"
+    params = []
+
+    # キーワード検索（タイトルまたは著者名にマッチ）
+    if keyword:
+        sql += " AND (title ILIKE %s OR author ILIKE %s)"
+        params.extend([f"%{keyword}%", f"%{keyword}%"])
+
+    # ステータス絞り込み
+    if status:
+        sql += " AND status = %s"
+        params.append(status)
+
+    sql += " ORDER BY id DESC;"
+
+    cur.execute(sql, params)
     books = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template("index.html", books=books)
+
+    return render_template("index.html", books=books, keyword=keyword, status=status)
 
 @app.route("/add", methods=["POST"])
 def add_book():
