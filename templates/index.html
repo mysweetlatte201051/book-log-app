@@ -4,22 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>書籍管理アプリ (Book Log)</title>
-    <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 20px; }
-        h1, h2 { color: #333; }
-        form { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-        div { margin-bottom: 10px; }
-        label { display: inline-block; width: 100px; }
-        input, select { padding: 5px; width: 250px; }
-        button { padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .actions { display: flex; gap: 5px; }
-        .btn-edit { background-color: #28a745; text-decoration: none; color: white; padding: 4px 8px; border-radius: 4px; font-size: 13px; }
-        .btn-delete { background-color: #dc3545; }
-    </style>
+    <  !-- 外部CSSファイルの読み込み -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <h1>📚 書籍管理アプリ</h1>
@@ -69,7 +55,16 @@
                 <td>{{ book.title }}</td>
                 <td>{{ book.author or '' }}</td>
                 <td>{{ book.status }}</td>
-                <td>{{ book.rating or '' }}</td>
+                <td>
+                    <!-- CSSクラスでスタイルを定義 -->
+                    {% if book.rating == 5 %}<span class="star-filled">★★★★★</span>
+                    {% elif book.rating == 4 %}<span class="star-filled">★★★★</span><span class="star-empty">☆</span>
+                    {% elif book.rating == 3 %}<span class="star-filled">★★★</span><span class="star-empty">☆☆</span>
+                    {% elif book.rating == 2 %}<span class="star-filled">★★</span><span class="star-empty">☆☆☆</span>
+                    {% elif book.rating == 1 %}<span class="star-filled">★</span><span class="star-empty">☆☆☆☆</span>
+                    {% else %}<span class="star-none">-</span>
+                    {% endif %}
+                </td>
                 <td>{{ book.updated_at.strftime('%Y-%m-%d %H:%M') if book.updated_at else '' }}</td>
                 <td class="actions">
                     <a href="/edit/{{ book.id }}" class="btn-edit">編集</a>
