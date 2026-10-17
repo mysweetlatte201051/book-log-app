@@ -3,6 +3,7 @@ from app import app
 from db import DATABASE_URL
 from init_db import init_db
 import psycopg2
+import json
 
 @pytest.fixture
 def client():
@@ -118,3 +119,52 @@ def test_404_not_found(client):
     response = client.get("/edit/99999")
     assert response.status_code == 404
     assert "404 - ページが見つかりません" in response.get_data(as_text=True)
+
+# --------------------------------------------------
+# 7. REST API
+# --------------------------------------------------
+def test_api_crud_flow(client):
+    # 1. POST: 新規登録
+    new_book = {
+        "title": "API入門",
+        "author": "テスト太郎",
+        "status": "読書中",
+        "rating": 4,
+        "memo": "API経由で追加"
+    }
+    response = client.post("/api/books", data=json.dumps(new_book), content_type="application/json")
+    assert response.status_code == 201
+    res_data = response.get_json()
+    assert res_data["message"] == "Book created"
+    book_id = res_data["id"]
+
+    # 2. GET: 一覧取得で登録されたデータを確認
+    response = client.get("/api/books")
+    assert response.status_code == 200
+    books = response.get_json()
+    assert len(books) >= 1
+    assert books[0]["title"] == "API入門"
+
+    # 3. GET (個別): IDで取得
+    response = client.get(f"/api/books/{book_id}")
+    assert response.status_code == 200
+    assert response.get_json()["author"] == "テスト太郎"
+
+    # 4. PUT: 更新
+    update_data = {
+        "title": "API入門 (改訂版)",
+        "author": "テスト太郎",
+        "status": "読了",
+        "rating": 5,
+        "memo": "読み終えた"
+    }
+    response = client.put(f"/api/books/{book_id}", data=json.dumps(update_data), content_type="application/json")
+    assert response.status_code == 200
+
+    # 5. DELETE: 削除
+    response = client.delete(f"/api/books/{book_id}")
+    assert response.status_code == 200
+
+    # 6. DELETE 後の 404 確認
+    response = client.get(f"/api/books/{book_id}")
+    assert response.status_code == 404
