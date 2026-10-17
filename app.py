@@ -54,6 +54,8 @@ def add_book():
 
     rating_val = int(rating) if rating and rating.isdigit() else None
 
+    memo = request.form.get("memo", "").strip()
+
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
@@ -74,34 +76,31 @@ def edit_book(book_id):
     cur = conn.cursor()
 
     if request.method == "POST":
-        title = request.form.get("title")
-        author = request.form.get("author")
-        status = request.form.get("status")
+        title = request.form.get("title", "").strip()
+        author = request.form.get("author", "").strip()
+        status = request.form.get("status", "積読")
         rating = request.form.get("rating")
+        memo = request.form.get("memo", "").strip()
 
         rating_val = int(rating) if rating and rating.isdigit() else None
 
-        cur.execute(
-            """
-            UPDATE books
-            SET title = %s, author = %s, status = %s, rating = %s, updated_at = CURRENT_TIMESTAMP
-            WHERE id = %s;
-            """,
-            (title, author, status, rating_val, book_id)
-        )
-        conn.commit()
+        if title:
+            # memo = %s を追加し、プレースホルダーと変数の数を揃えます (計6個)
+            cur.execute("""
+                UPDATE books 
+                SET title = %s, author = %s, status = %s, rating = %s, memo = %s, updated_at = CURRENT_TIMESTAMP
+                WHERE id = %s;
+            """, (title, author or None, status, rating_val, memo or None, book_id))
+            conn.commit()
+
         cur.close()
         conn.close()
         return redirect(url_for("index"))
 
-    # GET リクエスト時（編集画面の表示）
     cur.execute("SELECT * FROM books WHERE id = %s;", (book_id,))
     book = cur.fetchone()
     cur.close()
     conn.close()
-
-    if not book:
-        return "書籍が見つかりません", 404
 
     return render_template("edit.html", book=book)
 

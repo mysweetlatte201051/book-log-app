@@ -52,6 +52,10 @@
             <label for="rating">評価 (1-5):</label>
             <input type="number" id="rating" name="rating" min="1" max="5">
         </div>
+        <div>
+            <label for="memo">感想・メモ:</label>
+            <textarea id="memo" name="memo" rows="2" placeholder="読書感想やメモ"></textarea>
+        </div>
         <button type="submit">登録する</button>
     </form>
 
@@ -66,6 +70,7 @@
                 <th>評価</th>
                 <th>更新日時</th>
                 <th>操作</th>
+                <th>メモ</th>
             </tr>
         </thead>
         <tbody>
@@ -85,6 +90,7 @@
                     {% endif %}
                 </td>
                 <td>{{ book.updated_at.strftime('%Y-%m-%d %H:%M') if book.updated_at else '' }}</td>
+                <td>{{ book.memo or '' }}</td>
                 <td class="actions">
                     <a href="/edit/{{ book.id }}" class="btn-edit">編集</a>
                     <form action="/delete/{{ book.id }}" method="POST" style="display:inline; margin:0; padding:0; background:none;" onsubmit="return confirm('本当に削除しますか？');">
