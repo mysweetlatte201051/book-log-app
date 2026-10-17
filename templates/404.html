@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ページが見つかりません - 書籍管理アプリ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>🔍 404 - ページが見つかりません</h1>
+    <p>お探しの書籍データやページは存在しないか、削除された可能性があります。</p>
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('index') }}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px;">トップページに戻る</a>
+    </div>
+</body>
+</html>

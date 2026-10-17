@@ -4,9 +4,16 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from db import DATABASE_URL
 from init_db import init_db
+from flask import Flask, render_template, request, redirect, url_for, abort # abortを追加
+from db import get_db_connection
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
+
+# --- 404エラーハンドラー ---
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 # アプリ起動時に DB テーブルが存在するか確認
 init_db()
@@ -75,6 +82,16 @@ def edit_book(book_id):
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # 対象の書籍が存在するか確認
+    cur.execute("SELECT * FROM books WHERE id = %s;", (book_id,))
+    book = cur.fetchone()
+
+    # 書籍が存在しない場合は 404 エラーを発生させる
+    if not book:
+        cur.close()
+        conn.close()
+        abort(404)
+
     if request.method == "POST":
         title = request.form.get("title", "").strip()
         author = request.form.get("author", "").strip()
@@ -97,8 +114,6 @@ def edit_book(book_id):
         conn.close()
         return redirect(url_for("index"))
 
-    cur.execute("SELECT * FROM books WHERE id = %s;", (book_id,))
-    book = cur.fetchone()
     cur.close()
     conn.close()
 

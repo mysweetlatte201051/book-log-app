@@ -108,3 +108,13 @@ def test_search_books(client):
     content = response.get_data(as_text=True)
     assert "Flask Web開発" in content
     assert "Python入門" not in content
+
+
+# --------------------------------------------------
+# 6. 404エラーの自動テストケース
+# --------------------------------------------------
+def test_404_not_found(client):
+    # 存在しない ID (99999) にアクセスした際 404 が返るかテスト
+    response = client.get("/edit/99999")
+    assert response.status_code == 404
+    assert "404 - ページが見つかりません" in response.get_data(as_text=True)
