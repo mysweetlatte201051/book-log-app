@@ -1,95 +1,157 @@
-/* 全体スタイル */
+/* --- ベース・レスポンシブコンテナ --- */
 body {
-    font-family: sans-serif;
-    max-width: 800px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    max-width: 1200px;
+    width: 95%;
     margin: 20px auto;
-    padding: 0 20px;
-    color: #333;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
-h1, h2 {
-    color: #333;
-}
-
-/* フォーム装飾 */
-form {
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-form div {
-    margin-bottom: 10px;
-}
-
-label {
+/* --- ボタンの共通スタイル --- */
+.btn-primary {
     display: inline-block;
-    width: 100px;
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+.btn-primary:hover {
+    background-color: #0069d9;
 }
 
-input, select {
-    padding: 5px;
-    width: 250px;
+/* リセット・キャンセル用の二次ボタン */
+.btn-secondary {
+    display: inline-block;
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
 }
 
-button {
-    padding: 6px 12px;
-    background: #007bff;
+/* 一覧操作用小型ボタン */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-edit {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #ffc107;
+    color: #212529;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+}
+.btn-edit:hover {
+    background-color: #e0a800;
+}
+
+.btn-delete {
+    padding: 4px 10px;
+    background-color: #dc3545;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+}
+.btn-delete:hover {
+    background-color: #c82333;
 }
 
-button:hover {
-    background: #0056b3;
+/* --- フォームとレスポンシブ要素 --- */
+form .form-group {
+    margin-bottom: 12px;
 }
 
-/* テーブル装飾 */
+form label {
+    display: inline-block;
+    width: 120px;
+    vertical-align: top;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+textarea {
+    resize: both;
+    min-height: 80px;
+}
+
+/* スマホ等でのフォーム要素の可変対応 */
+@media (max-width: 600px) {
+    form label {
+        display: block;
+        width: 100%;
+        margin-bottom: 4px;
+    }
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+        max-width: 100%;
+    }
+}
+
+/* --- テーブルの横スクロール（スマートフォン対応） --- */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    min-width: 650px; /* スマホで崩れない最小幅 */
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 10px;
     text-align: left;
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #f8f9fa;
 }
 
-.actions {
-    display: flex;
-    gap: 5px;
-}
-
-.btn-edit {
-    background-color: #28a745;
-    text-decoration: none;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 13px;
-}
-
-.btn-delete {
-    background-color: #dc3545;
-}
-
-/* 評価（星マーク）専用クラス */
-.star-filled {
-    color: #f39c12; /* オレンジ色 */
-}
-
-.star-empty {
-    color: #ccc; /* グレー */
-}
-
-.star-none {
-    color: #999;
+.memo-cell {
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-width: 300px;
 }

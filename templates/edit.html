@@ -9,16 +9,16 @@
 <body>
     <h1>✏️ 書籍情報の編集</h1>
 
-    <form action="{{ url_for('edit_book', book_id=book.id) }}" method="POST">
-        <div>
-            <label for="title">タイトル:</label>
+    <form action="{{ url_for('edit_book', book_id=book.id) }}" method="POST" style="padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+        <div class="form-group">
+            <label for="title">タイトル <span style="color:red;">*</span>:</label>
             <input type="text" id="title" name="title" value="{{ book.title }}" required>
         </div>
-        <div>
+        <div class="form-group">
             <label for="author">著者:</label>
             <input type="text" id="author" name="author" value="{{ book.author or '' }}">
         </div>
-        <div>
+        <div class="form-group">
             <label for="status">ステータス:</label>
             <select id="status" name="status">
                 <option value="積読" {% if book.status == '積読' %}selected{% endif %}>積読</option>
@@ -26,17 +26,17 @@
                 <option value="読了" {% if book.status == '読了' %}selected{% endif %}>読了</option>
             </select>
         </div>
-        <div>
+        <div class="form-group">
             <label for="rating">評価 (1-5):</label>
             <input type="number" id="rating" name="rating" value="{{ book.rating or '' }}" min="1" max="5">
         </div>
-        <div>
+        <div class="form-group">
             <label for="memo">感想・メモ:</label>
-            <textarea id="memo" name="memo" rows="4" style="width: 100%; max-width: 400px; padding: 8px;">{{ book.memo or '' }}</textarea>
+            <textarea id="memo" name="memo" rows="4">{{ book.memo or '' }}</textarea>
         </div>
-        <div style="margin-top: 15px;">
-            <button type="submit">更新する</button>
-            <a href="{{ url_for('index') }}" style="margin-left: 10px; color: #6c757d; text-decoration: none;">キャンセル</a>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button type="submit" class="btn-primary">更新する</button>
+            <a href="{{ url_for('index') }}" class="btn-secondary">キャンセル</a>
         </div>
     </form>
 </body>

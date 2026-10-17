@@ -3,107 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>書籍管理アプリ (Book Log)</title>
+    <title>書籍管理アプリ</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <h1>📚 書籍管理アプリ</h1>
 
-    <h2>🔍 書籍を検索・絞り込み</h2>
-    <form action="/" method="GET" style="display: flex; gap: 10px; align-items: center; background: #eef7ff;">
-        <div>
-            <label for="search-keyword" style="width: auto;">キーワード:</label>
-            <input type="text" id="search-keyword" name="keyword" value="{{ keyword or '' }}" placeholder="タイトルや著者名">
-        </div>
-        <div>
-            <label for="search-status" style="width: auto;">ステータス:</label>
-            <select id="search-status" name="status" style="width: 120px;">
-                <option value="">すべて</option>
+    <!-- 🔍 検索・絞り込みフォーム -->
+    <section style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+        <h2>🔍 書籍の検索</h2>
+        <form action="{{ url_for('index') }}" method="GET" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <input type="text" name="keyword" value="{{ keyword }}" placeholder="タイトル・著者名で検索" style="max-width: 250px;">
+            <select name="status" style="max-width: 180px;">
+                <option value="">すべてのステータス</option>
                 <option value="積読" {% if status == '積読' %}selected{% endif %}>積読</option>
                 <option value="読書中" {% if status == '読書中' %}selected{% endif %}>読書中</option>
                 <option value="読了" {% if status == '読了' %}selected{% endif %}>読了</option>
             </select>
-        </div>
-        <button type="submit" style="background-color: #17a2b8;">検索</button>
-        {% if keyword or status %}
-            <a href="/" style="font-size: 13px; color: #6c757d; text-decoration: none;">クリア</a>
-        {% endif %}
-    </form>
+            <button type="submit" class="btn-primary">検索</button>
+            <a href="{{ url_for('index') }}" class="btn-secondary">リセット</a>
+        </form>
+    </section>
 
-    <h2>新しい本を追加</h2>
-    <form action="{{ url_for('add_book') }}" method="POST">
-        <div>
-            <label for="title">タイトル:</label>
-            <input type="text" id="title" name="title" required>
-        </div>
-        <div>
-            <label for="author">著者:</label>
-            <input type="text" id="author" name="author">
-        </div>
-        <div>
-            <label for="status">ステータス:</label>
-            <select id="status" name="status">
-                <option value="積読">積読</option>
-                <option value="読書中">読書中</option>
-                <option value="読了">読了</option>
-            </select>
-        </div>
-        <div>
-            <label for="rating">評価 (1-5):</label>
-            <input type="number" id="rating" name="rating" min="1" max="5">
-        </div>
-        <div>
-            <label for="memo">感想・メモ:</label>
-            <textarea id="memo" name="memo" rows="2" placeholder="読書感想やメモ"></textarea>
-        </div>
-        <button type="submit">登録する</button>
-    </form>
+    <!-- ➕ 新規書籍登録フォーム -->
+    <section style="margin-bottom: 25px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+        <h2>📖 新しい書籍の登録</h2>
+        <form action="{{ url_for('add_book') }}" method="POST">
+            <div class="form-group">
+                <label for="title">タイトル <span style="color:red;">*</span>:</label>
+                <input type="text" id="title" name="title" required placeholder="例: 白夜行">
+            </div>
+            <div class="form-group">
+                <label for="author">著者:</label>
+                <input type="text" id="author" name="author" placeholder="例: 山田太郎">
+            </div>
+            <div class="form-group">
+                <label for="status">ステータス:</label>
+                <select id="status" name="status">
+                    <option value="積読">積読</option>
+                    <option value="読書中">読書中</option>
+                    <option value="読了">読了</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="rating">評価 (1-5):</label>
+                <input type="number" id="rating" name="rating" min="1" max="5" placeholder="1〜5">
+            </div>
+            <div class="form-group">
+                <label for="memo">感想・メモ:</label>
+                <textarea id="memo" name="memo" rows="3" placeholder="読書感想やメモ"></textarea>
+            </div>
+            <div style="margin-top: 15px;">
+                <button type="submit" class="btn-primary">登録する</button>
+            </div>
+        </form>
+    </section>
 
-    <h2>登録書籍一覧</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>タイトル</th>
-                <th>著者</th>
-                <th>ステータス</th>
-                <th>評価</th>
-                <th>更新日時</th>
-                <th>操作</th>
-                <th>メモ</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for book in books %}
-            <tr>
-                <td>{{ book.id }}</td>
-                <td>{{ book.title }}</td>
-                <td>{{ book.author or '' }}</td>
-                <td>{{ book.status }}</td>
-                <td>
-                    {% if book.rating == 5 %}<span class="star-filled">★★★★★</span>
-                    {% elif book.rating == 4 %}<span class="star-filled">★★★★</span><span class="star-empty">☆</span>
-                    {% elif book.rating == 3 %}<span class="star-filled">★★★</span><span class="star-empty">☆☆</span>
-                    {% elif book.rating == 2 %}<span class="star-filled">★★</span><span class="star-empty">☆☆☆</span>
-                    {% elif book.rating == 1 %}<span class="star-filled">★</span><span class="star-empty">☆☆☆☆</span>
-                    {% else %}<span class="star-none">-</span>
-                    {% endif %}
-                </td>
-                <td>{{ book.updated_at.strftime('%Y-%m-%d %H:%M') if book.updated_at else '' }}</td>
-                <td>{{ book.memo or '' }}</td>
-                <td class="actions">
-                    <a href="/edit/{{ book.id }}" class="btn-edit">編集</a>
-                    <form action="/delete/{{ book.id }}" method="POST" style="display:inline; margin:0; padding:0; background:none;" onsubmit="return confirm('本当に削除しますか？');">
-                        <button type="submit" class="btn-delete">削除</button>
-                    </form>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" style="text-align: center;">登録されている書籍はありません。</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- 📋 登録書籍一覧テーブル -->
+    <section>
+        <h2>📋 登録書籍一覧</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>タイトル</th>
+                        <th>著者</th>
+                        <th>ステータス</th>
+                        <th>評価</th>
+                        <th>メモ</th>
+                        <th>登録日</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.id }}</td>
+                        <td><strong>{{ book.title }}</strong></td>
+                        <td>{{ book.author or '-' }}</td>
+                        <td>{{ book.status }}</td>
+                        <td>
+                            {% if book.rating == 5 %}<span class="star-filled">★★★★★</span>
+                            {% elif book.rating == 4 %}<span class="star-filled">★★★★</span><span class="star-empty">☆</span>
+                            {% elif book.rating == 3 %}<span class="star-filled">★★★</span><span class="star-empty">☆☆</span>
+                            {% elif book.rating == 2 %}<span class="star-filled">★★</span><span class="star-empty">☆☆☆</span>
+                            {% elif book.rating == 1 %}<span class="star-filled">★</span><span class="star-empty">☆☆☆☆</span>
+                            {% else %}<span class="star-none">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="memo-cell">{{ book.memo or '-' }}</td>
+                        <td>{{ book.created_at.strftime('%Y-%m-%d') if book.created_at else '-' }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ url_for('edit_book', book_id=book.id) }}" class="btn-edit">編集</a>
+                                <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" style="margin:0;" onsubmit="return confirm('本当に削除しますか？');">
+                                    <button type="submit" class="btn-delete">削除</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" style="text-align: center;">該当する書籍はありません。</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
 </body>
 </html>
