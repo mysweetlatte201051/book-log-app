@@ -34,11 +34,11 @@ Python / Flask および PostgreSQL を用いて構築した、読書状況や�
 本リポジトリの開発過程で得たトラブルシューティングや設計に関する知見を Qiita にて公開しています。
 
 * **Qiita 執筆記事:**
-  * [【Flask / PostgreSQL】Webアプリ開発と自動テスト追従の実践記録](https://qiita.com/) *(※実際の記事URLを貼り付けてください)*
-* **主な実績:**
-  * 初速での LGTM および ストック（後で読む保存）を獲得
-  * 有志による「Qiita いいねランキング自動更新記事」にランクイン・選出
-  * 他ユーザーの技術記事からの参照・引用リンクを獲得
+### 📚 Webアプリ開発＆自動テスト実践シリーズ（全3回）
+* **第1回:** [【ハンズオン】手動QAが未経験から Flask + pytest + GitHub Actions で API 自動テスト（CI）を構築するまで](https://qiita.com/MySweetLatte/items/6917dbf1cc805901b520)
+* **第2回:** [Flask + PostgreSQL の書籍管理アプリに Pytest と GitHub Actions (PostgreSQL サービスコンテナ) で CI 環境を構築した話](https://qiita.com/MySweetLatte/items/07e1f5e97e8f45ba1a7f)
+* **第3回:** [Flask + PostgreSQLでつくる書籍管理アプリ：Jinja2分離・CSS設計・pytest自動テスト追従の実践記録](https://qiita.com/MySweetLatte/items/567cd3882ed91b1753a1)
+* **第4回:** [【Python / Flask】PostgreSQLと連携した書籍管理Webアプリを開発！レスポンシブUIからREST API設計、pytest自動テストまで網羅](https://qiita.com/MySweetLatte/items/3bb978ab462bf234f4eb)
 
 ---
 
