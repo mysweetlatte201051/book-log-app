@@ -48,23 +48,28 @@ Python / Flask および PostgreSQL を用いて構築した、読書状況や�
    ```bash
    git clone [https://github.com/YOUR_USERNAME/book-log-app.git](https://github.com/YOUR_USERNAME/book-log-app.git)
    cd book-log-app
+   ```
 
 2. **依存パッケージのインストール**
 
    ```Bash
    pip install -r requirements.txt
+   ```
 
 3. **データベースの初期化**
 
    ```Bash
    python init_db.py
+   ```
    
 4. **アプリケーションの起動**
 
    ```Bash
    python app.py
+   ```
 
 5. **テストの実行**
 
    ```Bash
    pytest test_app.py -v
+   ```
